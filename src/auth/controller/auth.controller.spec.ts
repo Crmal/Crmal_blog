@@ -16,4 +16,12 @@ describe('AuthController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  it('회원가입한 데이터 반환', async () => {
+    const userData = { email: 'test@example.com', password: 'testpassword' };
+
+    const result = await controller.signUp(userData);
+
+    expect(result).toBeDefined();
+  });
 });
