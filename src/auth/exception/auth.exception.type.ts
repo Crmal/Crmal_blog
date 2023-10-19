@@ -2,21 +2,25 @@ import { HttpStatus } from '@nestjs/common';
 import { ExceptionType } from 'src/common/exception';
 
 export class AuthExceptionType implements ExceptionType {
+  constructor(status: HttpStatus, timestamp: Date, exceptionCode: number, message: string) {
+    this.status = status;
+    this.timestamp = timestamp;
+    this.exceptionCode = exceptionCode;
+    this.message = message;
+  }
+
   status: HttpStatus;
+
+  timestamp: Date;
 
   exceptionCode: number;
 
   message: string;
 
-  constructor(status: HttpStatus, exceptionCode: number, message: string) {
-    this.status = status;
-    this.exceptionCode = exceptionCode;
-    this.message = message;
-  }
-
-  static BAD_REQUEST = new AuthExceptionType(
-    HttpStatus.BAD_REQUEST,
-    4000,
-    '아이디 또는 패스워드를 입력해주세요',
+  static CONFLICT_DUPLICATE_USER: AuthExceptionType = new AuthExceptionType(
+    HttpStatus.CONFLICT,
+    new Date(),
+    4090,
+    '이미 존재하는 유저입니다.',
   );
 }

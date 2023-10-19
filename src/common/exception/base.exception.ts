@@ -3,14 +3,15 @@ import { HttpException } from '@nestjs/common';
 import { ExceptionType } from './exception.type';
 
 export class BaseException extends HttpException {
-  private exceptionType: ExceptionType;
-
   constructor(exceptionType: ExceptionType) {
     super(exceptionType.message, exceptionType.status);
-    this.exceptionType = exceptionType;
+    this.statusCode = exceptionType.exceptionCode;
+    this.timestamp = exceptionType.timestamp;
   }
 
-  getExceptionType(): ExceptionType {
-    return this.exceptionType;
-  }
+  statusCode: number;
+
+  timestamp: Date;
+
+  path: string;
 }
