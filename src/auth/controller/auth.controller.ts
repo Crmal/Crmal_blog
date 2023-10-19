@@ -1,6 +1,5 @@
-import { Body, Controller, HttpCode, Post, UseFilters } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { HttpExceptionFilter } from 'src/common/exception/http.exception.filter';
 import { User } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 
