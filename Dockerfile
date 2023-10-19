@@ -1,20 +1,26 @@
-FROM node:18.17.0-alpine AS INSTALLER
+# Build stage
+FROM node:18.17.0 AS builder
 
 WORKDIR /usr/src/app
-COPY package.json yarn.lock ./
 
+# Install Nest.js CLI globally
 RUN yarn global add @nestjs/cli
 
+COPY package*.json yarn.lock ./
+RUN yarn install # Install both production and development dependencies
+
 COPY . .
-RUN yarn --prod
-RUN yarn add @types/node -D
+
 RUN yarn build
 
+# Production image
 FROM node:18.17.0-alpine
 
 WORKDIR /usr/src/app
 
-COPY --from=INSTALLER /usr/src/app .
+COPY --from=builder /usr/src/app/package*.json ./
+COPY --from=builder /usr/src/app/yarn.lock ./
+COPY --from=builder /usr/src/app/dist ./dist
 
 ARG DB_HOST 
 ARG DB_PORT 
@@ -22,5 +28,7 @@ ARG DB_USERNAME
 ARG DB_PASSWORD 
 ARG DB_DATABASE 
 
-CMD ["node", "dist/main.js"]
-EXPOSE ${CONTAINER_PORT}
+# Prune development dependencies
+RUN yarn install --production
+
+CMD ["node", "dist/main"]
