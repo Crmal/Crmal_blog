@@ -11,6 +11,12 @@ import {
 @Entity()
 @Unique(['email'])
 export class User extends BaseEntity {
+  constructor(email: string, password: string) {
+    super();
+    this.email = email;
+    this.password = password;
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 

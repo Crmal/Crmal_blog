@@ -1,4 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseFilters } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { HttpExceptionFilter } from 'src/common/exception/http.exception.filter';
 import { User } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 
@@ -9,8 +11,8 @@ export class AuthController {
   constructor(private readonly userService: UserService) {}
 
   @Post('')
-  async signUp(@Body() signUpRequestDto: SignUpRequestDto): Promise<User> {
-    const userData = await this.userService.signUp(signUpRequestDto);
-    return userData;
+  @HttpCode(201)
+  signUp(@Body() signUpRequestDto: SignUpRequestDto): Observable<Omit<User, 'password'>> {
+    return this.userService.create(signUpRequestDto);
   }
 }
