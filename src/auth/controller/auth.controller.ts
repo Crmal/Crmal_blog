@@ -11,7 +11,7 @@ export class AuthController {
 
   @Post('')
   @HttpCode(201)
-  signUp(@Body() signUpRequestDto: SignUpRequestDto): Observable<Omit<User, 'password'>> {
+  signUp(@Body() signUpRequestDto: SignUpRequestDto): Promise<Omit<User, 'password'>> {
     return this.userService.create(signUpRequestDto);
   }
 }

@@ -4,9 +4,9 @@ import { Observable, of } from 'rxjs';
 
 @Injectable()
 export class AuthService {
-  hashPassword(password: string): Observable<string> {
+  async hashPassword(password: string): Promise<string> {
     const saltRounds = 10;
     const hashedPassword = bcrypt.hashSync(password, saltRounds);
-    return of(hashedPassword);
+    return hashedPassword;
   }
 }

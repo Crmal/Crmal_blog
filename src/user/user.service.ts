@@ -17,21 +17,18 @@ export class UserService {
     private authService: AuthService,
   ) {}
 
-  create(signUpRequestDto: SignUpRequestDto): Observable<Omit<User, 'password'>> {
+  async create(signUpRequestDto: SignUpRequestDto): Promise<Omit<User, 'password'>> {
     this.checkUserAndThrowError(signUpRequestDto.email);
 
-    return this.authService.hashPassword(signUpRequestDto.password).pipe(
-      map(hashedPassword => {
-        const user = this.userFactory.createUser(signUpRequestDto.email, hashedPassword);
-        const { password, ...result } = user;
-        this.userRepository.save(user);
-        return result as Omit<User, 'password'>;
-      }),
-    );
+    const hashedPassword = await this.authService.hashPassword(signUpRequestDto.password);
+    const user = this.userFactory.createUser(signUpRequestDto.email, hashedPassword);
+    await this.userRepository.save(user);
+    const { password, ...result } = user;
+    return result as Omit<User, 'password'>;
   }
 
-  checkUserAndThrowError(email: string): void {
-    const user = this.userRepository.findOne({ where: { email } });
+  async checkUserAndThrowError(email: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { email } });
     if (user) {
       throw new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
     }
