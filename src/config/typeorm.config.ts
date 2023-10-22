@@ -8,7 +8,6 @@ export class DatabaseConfiguration implements TypeOrmOptionsFactory {
   constructor(private readonly configService: ConfigService) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
-    const entities = [];
     const isProduction = this.configService.get('LAUNCH_ENV') === 'prod';
     const host = isProduction ? 'mysql' : 'mysql-test';
 
@@ -19,7 +18,7 @@ export class DatabaseConfiguration implements TypeOrmOptionsFactory {
       username: this.configService.get('DB_USERNAME'),
       password: this.configService.get('DB_PASSWORD'),
       database: this.configService.get('DB_DATABASE'),
-      entities,
+      autoLoadEntities: true,
       synchronize: true,
     };
 
