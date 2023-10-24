@@ -18,7 +18,7 @@ export class UserService {
   ) {}
 
   async create(signUpRequestDto: SignUpRequestDto): Promise<Omit<User, 'password'>> {
-    this.checkUserAndThrowError(signUpRequestDto.email);
+    await this.checkUserAndThrowError(signUpRequestDto.email);
 
     const hashedPassword = await this.authService.hashPassword(signUpRequestDto.password);
     const user = this.userFactory.createUser(signUpRequestDto.email, hashedPassword);
