@@ -9,7 +9,6 @@ import { AuthController } from './auth.controller';
 
 /** UserService Mocking */
 const mockUserService = {
-  checkUserAndThrowError: jest.fn(),
   create: jest.fn(),
 };
 
