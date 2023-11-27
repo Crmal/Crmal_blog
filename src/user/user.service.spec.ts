@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { AuthException, AuthExceptionType } from 'src/auth/exception';
 import { AuthService } from 'src/auth/service/auth.service';
 import { SignUpRequestDto } from 'src/auth/service/dto';
+import { Repository } from 'typeorm';
 
 import { User } from './entity/user.entity';
 import { UserFactory } from './factories/user.factory';
@@ -17,35 +18,46 @@ const mockUserFactory = {
 };
 
 const mockUserRepository = {
-  findOne: jest.fn(),
+  create: jest.fn(),
   save: jest.fn(),
+  find: jest.fn(),
+  findOne: jest.fn(),
 };
 
 describe('UserService', () => {
-  let service: UserService;
+  let userService: UserService;
+  let authService: AuthService;
+  let userRepository: Repository<User>;
+  let userFactory: UserFactory;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
         { provide: getRepositoryToken(User), useValue: mockUserRepository },
-        { provide: AuthService, useValue: mockAuthService },
         { provide: UserFactory, useValue: mockUserFactory },
+        { provide: AuthService, useValue: mockAuthService },
       ],
     }).compile();
 
-    service = module.get<UserService>(UserService);
+    userService = module.get<UserService>(UserService);
+    authService = module.get<AuthService>(AuthService);
+    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
+    userFactory = module.get<UserFactory>(UserFactory);
   });
 
-  it('회원가입 성공시 패스워드를 제외한 User를 응답한다.', async () => {
+  it('create()', async () => {
     // given
     const user = new SignUpRequestDto();
     user.email = 'test@example.com';
     user.password = 'testpassword';
     mockUserFactory.createUser.mockReturnValue(new User(user.email, user.password));
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+    mockAuthService.hashPassword.mockResolvedValue('hashPassword');
+    jest.spyOn(userRepository, 'save').mockResolvedValue(new User(user.email, user.password));
 
     // When
-    const result = await service.create(user);
+    const result = await userService.create(user);
 
     // Then
     expect(result).toHaveProperty('email', user.email);
@@ -56,8 +68,8 @@ describe('UserService', () => {
     const user = { email: 'test@example.com', password: 'testpassword' };
     const expectedError = new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
 
-    mockUserRepository.findOne.mockReturnValue(new User(user.email, user.password));
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(new User(user.email, user.password));
     // then
-    expect(service.checkUserAndThrowError(user.email)).rejects.toThrow(expectedError);
+    expect(userService.checkUserAndThrowError(user.email)).rejects.toThrow(expectedError);
   });
 });

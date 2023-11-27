@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from 'src/user/user.service';
 
 import { AuthException, AuthExceptionType } from '../exception';
-import { AuthService } from '../service/auth.service';
 import { SignUpRequestDto } from '../service/dto';
 
 import { AuthController } from './auth.controller';
