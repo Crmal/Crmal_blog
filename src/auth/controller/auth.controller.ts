@@ -1,5 +1,4 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { User } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 

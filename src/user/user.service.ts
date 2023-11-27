@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthException, AuthExceptionType } from 'src/auth/exception';
 import { AuthService } from 'src/auth/service/auth.service';
@@ -12,8 +12,8 @@ import { UserFactory } from './factories/user.factory';
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService,
     private userFactory: UserFactory,
-    private authService: AuthService,
   ) {}
 
   async create(signUpRequestDto: SignUpRequestDto): Promise<Omit<User, 'password'>> {
@@ -32,5 +32,15 @@ export class UserService {
     if (user) {
       throw new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
     }
+  }
+
+  async findOneByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      throw new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
+    }
+
+    return user;
   }
 }
