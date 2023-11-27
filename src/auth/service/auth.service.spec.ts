@@ -1,3 +1,4 @@
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/user/entity/user.entity';
@@ -12,12 +13,20 @@ const mockUserService = {
   findOneByEmail: jest.fn(),
 };
 
+const mockJwtService = {
+  signAsync: jest.fn(),
+};
+
 describe('AuthService', () => {
   let service: AuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, { provide: UserService, useValue: mockUserService }],
+      providers: [
+        AuthService,
+        { provide: UserService, useValue: mockUserService },
+        { provide: JwtService, useValue: mockJwtService },
+      ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
@@ -49,6 +58,7 @@ describe('AuthService', () => {
       mockUserService.findOneByEmail.mockResolvedValue(
         new User(signInRequest.email, signInRequest.password),
       );
+      mockJwtService.signAsync.mockResolvedValue('token');
 
       // When
       const accessToken = await service.signIn(signInRequest);
