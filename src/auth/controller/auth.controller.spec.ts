@@ -1,7 +1,9 @@
+import { JwtModule, JwtSecretRequestType, JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from 'src/user/user.service';
 
 import { AuthException, AuthExceptionType } from '../exception';
+import { AuthService } from '../service/auth.service';
 import { SignUpRequestDto } from '../service/dto';
 
 import { AuthController } from './auth.controller';
@@ -17,7 +19,7 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [{ provide: UserService, useValue: mockUserService }],
+      providers: [AuthService, JwtService, { provide: UserService, useValue: mockUserService }],
     }).compile();
     controller = module.get<AuthController>(AuthController);
   });

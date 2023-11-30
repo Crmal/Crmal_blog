@@ -38,7 +38,7 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {
-      throw new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
+      throw new AuthException(AuthExceptionType.INVALID_CREDENTIALS);
     }
 
     return user;

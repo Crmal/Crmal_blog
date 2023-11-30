@@ -1,5 +1,7 @@
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
+import { User } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 
 import { AuthException, AuthExceptionType } from '../exception';
@@ -11,48 +13,69 @@ const mockUserService = {
   findOneByEmail: jest.fn(),
 };
 
+const mockJwtService = {
+  signAsync: jest.fn(),
+};
+
 describe('AuthService', () => {
   let service: AuthService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, { provide: UserService, useValue: mockUserService }],
+      providers: [
+        AuthService,
+        { provide: UserService, useValue: mockUserService },
+        { provide: JwtService, useValue: mockJwtService },
+      ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
   });
 
-  it('해시화된 비밀번호를 만든다', async () => {
-    // Given
-    const password = 'testpassword';
+  describe('hashedPassword()', () => {
+    it('해시화된 비밀번호를 만든다', async () => {
+      // Given
+      const password = 'testpassword';
 
-    // When
-    const hashedPassword = await service.hashPassword(password);
+      // When
+      const hashedPassword = await service.hashPassword(password);
 
-    // Then
-    expect(bcrypt.compareSync(password, hashedPassword)).toBe(true);
+      // Then
+      expect(bcrypt.compareSync(password, hashedPassword)).toBe(true);
+    });
   });
 
-  // it('회원이 있을경우 토큰을 발급하여 준다.', async () => {
-  //   // Given
-  //   const user = new SignInRequest();
-  //   user.email = 'test@example.com';
-  //   user.password = 'testpassword';
+  describe('signIn()', () => {
+    let signInRequest: SignInRequest;
+    beforeEach(() => {
+      signInRequest = {
+        email: 'test@example.com',
+        password: 'testpassword',
+      };
+    });
+    it('로그인 성공', async () => {
+      // Given
+      mockUserService.findOneByEmail.mockResolvedValue(
+        new User(signInRequest.email, signInRequest.password),
+      );
+      mockJwtService.signAsync.mockResolvedValue('token');
 
-  //   // When
-  //   const token = await service.signIn(user);
+      // When
+      const accessToken = await service.signIn(signInRequest);
 
-  //   // Then
-  //   expect(token).toBeDefined();
-  // });
+      // Then
+      expect(accessToken).toEqual(expect.any(String));
+    });
 
-  // it('회원이 없을경우 에러를 던진다', async () => {
-  //   // Given
-  //   const user = new SignInRequest();
-  //   user.email = 'test@example.com';
-  //   user.password = 'testpassword';
-  //   const expectedError = new AuthException(AuthExceptionType.NOT_FOUND_USER);
+    it('회원이 없을시 에러', async () => {
+      // Given
+      const expectedError = new AuthException(AuthExceptionType.NOT_FOUND_USER);
+      mockUserService.findOneByEmail.mockRejectedValue(expectedError);
 
-  //   expect(service.signIn(user)).rejects.toThrow(expectedError);
-  // });
+      // When
+
+      // then
+      expect(service.signIn(signInRequest)).rejects.toThrow(expectedError);
+    });
+  });
 });
