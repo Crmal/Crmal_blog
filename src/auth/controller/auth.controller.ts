@@ -14,13 +14,13 @@ export class AuthController {
 
   @Post('')
   @HttpCode(201)
-  signUp(@Body() signUpRequestDto: SignUpRequestDto): Promise<Omit<User, 'password'>> {
-    return this.userService.create(signUpRequestDto);
+  async signUp(@Body() signUpRequestDto: SignUpRequestDto): Promise<Omit<User, 'password'>> {
+    return await this.userService.create(signUpRequestDto);
   }
 
   @Post('signin')
   @HttpCode(201)
-  signin(@Body() signInRequest: SignInRequest): Promise<string> {
-    return this.authService.signIn(signInRequest);
+  async signin(@Body() signInRequest: SignInRequest): Promise<string> {
+    return await this.authService.signIn(signInRequest);
   }
 }
