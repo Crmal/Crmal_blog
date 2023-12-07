@@ -55,9 +55,11 @@ describe('AuthService', () => {
     });
     it('로그인 성공', async () => {
       // Given
-      mockUserService.findOneByEmail.mockResolvedValue(
-        new User(signInRequest.email, signInRequest.password),
-      );
+      const fakeUser = {
+        email: 'test@example.com',
+        password: await bcrypt.hash('testpassword', 10),
+      };
+      mockUserService.findOneByEmail.mockResolvedValue(new User(fakeUser.email, fakeUser.password));
       mockJwtService.signAsync.mockResolvedValue('token');
 
       // When
