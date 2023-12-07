@@ -79,5 +79,20 @@ describe('AuthService', () => {
       // then
       expect(service.signIn(signInRequest)).rejects.toThrow(expectedError);
     });
+
+    it('패스워드 틀릴시 에러', async () => {
+      // Given
+      const exception = new AuthException(AuthExceptionType.INVALID_CREDENTIALS);
+      const fakeUser = {
+        email: 'test@example.com',
+        password: await bcrypt.hash('fakepassword', 10),
+      };
+      mockUserService.findOneByEmail.mockResolvedValue(
+        new User(fakeUser.email, signInRequest.password),
+      );
+
+      // When
+      expect(service.signIn(fakeUser)).rejects.toThrow(exception);
+    });
   });
 });
