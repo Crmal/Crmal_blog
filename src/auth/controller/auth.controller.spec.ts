@@ -24,7 +24,7 @@ describe('AuthController', () => {
     controller = module.get<AuthController>(AuthController);
   });
 
-  describe('회원가입 기능', () => {
+  describe('회원가입 라우터', () => {
     const signUpRequestDto: SignUpRequestDto = {
       email: 'test@example.com',
       password: 'testpassword',
