@@ -10,13 +10,15 @@ import { HttpExceptionFilter } from './common/exception/http.exception.filter';
 import { DatabaseConfiguration } from './config/typeorm.config';
 import { UserModule } from './user/user.module';
 
+const businessModules = [AuthModule, UserModule];
+
+const libModules = [
+  ConfigModule.forRoot({ isGlobal: true }),
+  TypeOrmModule.forRootAsync({ useClass: DatabaseConfiguration }),
+];
+
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({ useClass: DatabaseConfiguration }),
-    AuthModule,
-    UserModule,
-  ],
+  imports: [...businessModules, ...libModules],
   controllers: [AppController],
   providers: [
     AppService,

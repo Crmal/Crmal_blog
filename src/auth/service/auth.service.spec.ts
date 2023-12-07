@@ -55,9 +55,11 @@ describe('AuthService', () => {
     });
     it('로그인 성공', async () => {
       // Given
-      mockUserService.findOneByEmail.mockResolvedValue(
-        new User(signInRequest.email, signInRequest.password),
-      );
+      const fakeUser = {
+        email: 'test@example.com',
+        password: await bcrypt.hash('testpassword', 10),
+      };
+      mockUserService.findOneByEmail.mockResolvedValue(new User(fakeUser.email, fakeUser.password));
       mockJwtService.signAsync.mockResolvedValue('token');
 
       // When
@@ -76,6 +78,21 @@ describe('AuthService', () => {
 
       // then
       expect(service.signIn(signInRequest)).rejects.toThrow(expectedError);
+    });
+
+    it('패스워드 틀릴시 에러', async () => {
+      // Given
+      const exception = new AuthException(AuthExceptionType.INVALID_CREDENTIALS);
+      const fakeUser = {
+        email: 'test@example.com',
+        password: await bcrypt.hash('fakepassword', 10),
+      };
+      mockUserService.findOneByEmail.mockResolvedValue(
+        new User(fakeUser.email, signInRequest.password),
+      );
+
+      // When
+      expect(service.signIn(fakeUser)).rejects.toThrow(exception);
     });
   });
 });

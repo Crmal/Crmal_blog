@@ -45,31 +45,32 @@ describe('UserService', () => {
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
     userFactory = module.get<UserFactory>(UserFactory);
   });
+  describe('create()', () => {
+    it('유저 생성', async () => {
+      // given
+      const user = new SignUpRequestDto();
+      user.email = 'test@example.com';
+      user.password = 'testpassword';
+      mockUserFactory.createUser.mockReturnValue(new User(user.email, user.password));
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
+      mockAuthService.hashPassword.mockResolvedValue('hashPassword');
+      jest.spyOn(userRepository, 'save').mockResolvedValue(new User(user.email, user.password));
 
-  it('create()', async () => {
-    // given
-    const user = new SignUpRequestDto();
-    user.email = 'test@example.com';
-    user.password = 'testpassword';
-    mockUserFactory.createUser.mockReturnValue(new User(user.email, user.password));
-    jest.spyOn(userRepository, 'findOne').mockResolvedValue(null);
-    mockAuthService.hashPassword.mockResolvedValue('hashPassword');
-    jest.spyOn(userRepository, 'save').mockResolvedValue(new User(user.email, user.password));
+      // When
+      const result = await userService.create(user);
 
-    // When
-    const result = await userService.create(user);
+      // Then
+      expect(result).toHaveProperty('email', user.email);
+    });
 
-    // Then
-    expect(result).toHaveProperty('email', user.email);
-  });
+    it('이미 있는 계정 에러', async () => {
+      // given
+      const user = { email: 'test@example.com', password: 'testpassword' };
+      const expectedError = new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
 
-  it('회원 정보가 있을시 에러를 던진다.', async () => {
-    // given
-    const user = { email: 'test@example.com', password: 'testpassword' };
-    const expectedError = new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
-
-    jest.spyOn(userRepository, 'findOne').mockResolvedValue(new User(user.email, user.password));
-    // then
-    expect(userService.checkUserAndThrowError(user.email)).rejects.toThrow(expectedError);
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(new User(user.email, user.password));
+      // then
+      expect(userService.checkUserAndThrowError(user.email)).rejects.toThrow(expectedError);
+    });
   });
 });

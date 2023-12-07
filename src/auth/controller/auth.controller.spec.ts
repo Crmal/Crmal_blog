@@ -24,13 +24,13 @@ describe('AuthController', () => {
     controller = module.get<AuthController>(AuthController);
   });
 
-  describe('회원가입 기능', () => {
+  describe('회원가입 라우터', () => {
     const signUpRequestDto: SignUpRequestDto = {
       email: 'test@example.com',
       password: 'testpassword',
     };
 
-    it('회원가입에 성공할시 패스워드를 제외한 유저 정보를 응답한다.', async () => {
+    it('회원가입시 패스워드를 제외한 유저 정보를 응답', async () => {
       // Given
       const createdUser = { id: 1, email: 'test@example.com' };
       mockUserService.create.mockReturnValue(createdUser);
@@ -42,7 +42,7 @@ describe('AuthController', () => {
       expect(result).toEqual(createdUser);
     });
 
-    it('이미 존재하는 계정일 경우 에러를 던진다.', async () => {
+    it('존재하는 계정일 경우 에러', async () => {
       // Given
       const expectedError = new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
       mockUserService.create.mockRejectedValue(expectedError);
