@@ -20,7 +20,7 @@ export class AuthController {
 
   @Post('signin')
   @HttpCode(201)
-  async signin(@Body() signInRequest: SignInRequest): Promise<string> {
+  async signin(@Body() signInRequest: SignInRequest): Promise<Record<string, string>> {
     return await this.authService.signIn(signInRequest);
   }
 }
