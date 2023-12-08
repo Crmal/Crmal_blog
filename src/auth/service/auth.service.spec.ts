@@ -60,13 +60,15 @@ describe('AuthService', () => {
         password: await bcrypt.hash('testpassword', 10),
       };
       mockUserService.findOneByEmail.mockResolvedValue(new User(fakeUser.email, fakeUser.password));
-      mockJwtService.signAsync.mockResolvedValue('token');
+      mockJwtService.signAsync
+        .mockReturnValueOnce('accessToken') // createAccessToken 호출 시 반환 값
+        .mockReturnValueOnce('refreshToken'); // createRefreshToken 호출 시 반환 값
 
       // When
       const accessToken = await service.signIn(signInRequest);
 
       // Then
-      expect(accessToken).toEqual(expect.any(String));
+      expect(accessToken).toEqual({ accessToken: 'accessToken', refreshToken: 'refreshToken' });
     });
 
     it('회원이 없을시 에러', async () => {
