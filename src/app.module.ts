@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { HttpExceptionFilter } from './common/exception/http.exception.filter';
 import { DatabaseConfiguration } from './config/typeorm.config';
 import { UserModule } from './user/user.module';
+import { PostsController } from './posts/controller/posts.controller';
+import { PostsModule } from './posts/posts.module';
 
 @Module({
   imports: [
@@ -16,8 +18,9 @@ import { UserModule } from './user/user.module';
     TypeOrmModule.forRootAsync({ useClass: DatabaseConfiguration }),
     AuthModule,
     UserModule,
+    PostsModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, PostsController],
   providers: [
     AppService,
     {
