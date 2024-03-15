@@ -34,11 +34,11 @@ export class UserService {
     }
   }
 
-  async findOneByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { email } });
+  async findOneById(userId: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id: +userId } });
 
-    if (!user) {
-      throw new AuthException(AuthExceptionType.INVALID_CREDENTIALS);
+    if (user) {
+      throw new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
     }
 
     return user;

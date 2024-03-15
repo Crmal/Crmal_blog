@@ -1,4 +1,4 @@
-import { Post } from 'src/posts/entity/post.entity';
+import { User } from 'src/user/entity/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,26 +7,24 @@ import {
   UpdateDateColumn,
   BaseEntity,
   Unique,
-  OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
-@Unique(['email'])
-export class User extends BaseEntity {
-  constructor(email: string, password: string) {
+export class Post extends BaseEntity {
+  constructor() {
     super();
-    this.email = email;
-    this.password = password;
   }
 
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  email: string;
+  title: string;
 
   @Column()
-  password: string;
+  description: string;
 
   // ... Other fields
 
@@ -37,8 +35,9 @@ export class User extends BaseEntity {
   updatedAt: Date;
 
   // Relations
-  @OneToMany(() => Post, post => post.user)
-  post: Post[];
+  @ManyToOne(() => User, user => user.post)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   // ... Other relations
 }
