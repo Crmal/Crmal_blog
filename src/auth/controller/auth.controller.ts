@@ -1,17 +1,26 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { User } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 
-import { SignUpRequestDto } from '../service/dto';
+import { AuthService } from '../service/auth.service';
+import { SignInRequest, SignUpRequestDto } from '../service/dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('')
   @HttpCode(201)
-  signUp(@Body() signUpRequestDto: SignUpRequestDto): Promise<Omit<User, 'password'>> {
-    return this.userService.create(signUpRequestDto);
+  async signUp(@Body() signUpRequestDto: SignUpRequestDto): Promise<Omit<User, 'password'>> {
+    return await this.userService.create(signUpRequestDto);
+  }
+
+  @Post('signin')
+  @HttpCode(201)
+  async signin(@Body() signInRequest: SignInRequest): Promise<Record<string, string>> {
+    return await this.authService.signIn(signInRequest);
   }
 }

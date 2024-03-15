@@ -31,6 +31,7 @@ module.exports = {
     'no-console': ['error', { allow: ['warn', 'error'] }],
     'no-constant-condition': ['error', { checkLoops: true }],
     'no-empty-function': 'off',
+    'no-return-await': 'off',
     'no-restricted-syntax': [
       'error',
       {

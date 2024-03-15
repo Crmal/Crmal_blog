@@ -13,15 +13,16 @@ import { PostsController } from './posts/controller/posts.controller';
 import { PostsModule } from './posts/posts.module';
 import { UserModule } from './user/user.module';
 
+const businessModules = [AuthModule, UserModule];
+
+const libModules = [
+  ConfigModule.forRoot({ isGlobal: true }),
+  TypeOrmModule.forRootAsync({ useClass: DatabaseConfiguration }),
+];
+
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({ useClass: DatabaseConfiguration }),
-    AuthModule,
-    UserModule,
-    PostsModule,
-  ],
-  controllers: [AppController, PostsController],
+  imports: [...businessModules, ...libModules],
+  controllers: [AppController],
   providers: [
     AppService,
     {
