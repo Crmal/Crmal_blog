@@ -13,7 +13,7 @@ import {
 
 @Entity()
 export class Post extends BaseEntity {
-  constructor(email: string, password: string) {
+  constructor() {
     super();
   }
 

@@ -33,4 +33,14 @@ export class UserService {
       throw new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
     }
   }
+
+  async findOneById(userId: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id: +userId } });
+
+    if (user) {
+      throw new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
+    }
+
+    return user;
+  }
 }
