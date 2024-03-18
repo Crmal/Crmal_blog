@@ -21,3 +21,30 @@
 ## 개발자
 
 Crmal
+
+## To-Do List
+
+### 기능 구현
+- [ ] 게시물 CRUD 구현
+- [ ] Auth Signin 기능 pipe 구현
+
+### 테스트 작성
+- [ ] 게시물 CRUD 테스트코드
+- [ ] AuthGraud 테스트코드
+
+
+### 데이터베이스
+- [ ] 조회 로직 속도체크
+- [ ] Post Index 작업 및 비교
+
+### 서버
+- [ ] EC2
+- [ ] Docker
+- [ ] Git Action
+- [ ] Kubernetes
+- [ ] Kafak
+
+### 기타
+- [ ] 프로젝트 README 업데이트
+- [ ] 버그 수정
+- [ ] 보안 취약점 보완
