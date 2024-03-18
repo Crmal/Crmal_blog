@@ -4,13 +4,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entity/user.entity';
+import { UserFactory } from 'src/user/factories/user.factory';
 import { UserModule } from 'src/user/user.module';
+import { UserService } from 'src/user/user.service';
 
 import { AuthController } from './controller/auth.controller';
 import { JwtStrategy } from './guard/jwt.startegy';
 import { AuthService } from './service/auth.service';
-import { UserService } from 'src/user/user.service';
-import { UserFactory } from 'src/user/factories/user.factory';
 
 @Module({
   imports: [

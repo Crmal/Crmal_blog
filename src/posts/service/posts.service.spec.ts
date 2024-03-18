@@ -16,4 +16,8 @@ describe('PostsService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  describe('create()', () => {
+    const userId = '1';
+  });
 });
