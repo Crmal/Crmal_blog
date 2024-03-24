@@ -64,4 +64,21 @@ describe('PostsService', () => {
       expect(result).toEqual(expect.objectContaining(postCreateRequest));
     });
   });
+
+  describe('findOne()', () => {
+    const found = {
+      id: '1',
+      title: 'Test Title',
+      description: 'Test Description',
+    };
+    it('findOne()', async () => {
+      // Given
+      mockPostRepository.findOne.mockReturnValue(found);
+      // When
+      const result = await service.findOneById(found);
+
+      // Then
+      expect(result).toEqual(found);
+    });
+  });
 });

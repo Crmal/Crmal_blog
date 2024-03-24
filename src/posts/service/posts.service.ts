@@ -20,4 +20,8 @@ export class PostsService {
     const user = await this.userService.findOneById(userId);
     return this.postRepository.save(this.postFactory.create(postCreateRequest, user));
   }
+
+  async findOneById(postId): Promise<Post> {
+    return new Post();
+  }
 }
