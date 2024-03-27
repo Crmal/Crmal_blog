@@ -4,6 +4,7 @@ import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 
 import { Post } from '../entity/post.entity';
+import { PostException, PostExceptionType } from '../exception';
 
 import { PostFactory } from './Factory/post.factory';
 import { PostCreateRequest } from './dto/postCreateRequest.dto';
@@ -22,6 +23,10 @@ export class PostsService {
   }
 
   async findOneById(postId): Promise<Post> {
-    return new Post();
+    const post = await this.postRepository.findOne({ where: { id: postId } });
+    if (!post) {
+      throw new PostException(PostExceptionType.NOT_FOUND_POST);
+    }
+    return post;
   }
 }

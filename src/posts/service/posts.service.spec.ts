@@ -4,6 +4,7 @@ import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 
 import { Post } from '../entity/post.entity';
+import { PostException, PostExceptionType } from '../exception';
 
 import { PostFactory } from './Factory/post.factory';
 import { PostCreateRequest } from './dto/postCreateRequest.dto';
@@ -70,15 +71,25 @@ describe('PostsService', () => {
       id: '1',
       title: 'Test Title',
       description: 'Test Description',
+      userId: '1',
     };
-    it('findOne()', async () => {
+    it('post하나를 가져옵니다.', async () => {
       // Given
       mockPostRepository.findOne.mockReturnValue(found);
       // When
-      const result = await service.findOneById(found);
+      const result = await service.findOneById(found.id);
 
       // Then
       expect(result).toEqual(found);
+    });
+
+    it('Post가 없을시 에러를 던집니다.', async () => {
+      // Given
+      jest.spyOn(mockPostRepository, 'findOne').mockResolvedValue(null);
+      // When, Then
+      await expect(service.findOneById('6')).rejects.toThrow(
+        new PostException(PostExceptionType.NOT_FOUND_POST),
+      );
     });
   });
 });
