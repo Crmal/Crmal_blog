@@ -13,10 +13,6 @@ import {
 
 @Entity()
 export class Post extends BaseEntity {
-  constructor() {
-    super();
-  }
-
   @PrimaryGeneratedColumn()
   id: number;
 

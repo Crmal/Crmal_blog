@@ -31,7 +31,7 @@ export class AuthService {
   }
 
   async createAccessToken(userId: number): Promise<string> {
-    const payload = { userId };
+    const payload = { id: userId };
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET_KEY'),
     });
@@ -39,7 +39,7 @@ export class AuthService {
   }
 
   async createRefreshToken(userId: number): Promise<string> {
-    const payload = { userId };
+    const payload = { id: userId };
     const refreshToken = await this.jwtService.signAsync(payload, {
       secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET_KEY'),
     });

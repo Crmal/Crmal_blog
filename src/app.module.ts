@@ -13,7 +13,7 @@ import { PostsController } from './posts/controller/posts.controller';
 import { PostsModule } from './posts/posts.module';
 import { UserModule } from './user/user.module';
 
-const businessModules = [AuthModule, UserModule];
+const businessModules = [AuthModule, UserModule, PostsModule];
 
 const libModules = [
   ConfigModule.forRoot({ isGlobal: true }),
@@ -28,10 +28,6 @@ const libModules = [
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
     },
   ],
 })

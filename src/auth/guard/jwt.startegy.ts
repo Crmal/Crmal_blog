@@ -12,7 +12,7 @@ import { JwtPayloadType } from './types/jwt-payload.type';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(readonly configService: ConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([request => request?.cookies?.accessToken]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get<string>('JWT_ACCESS_TOKEN_SECRET_KEY'), // JWT secret key
     });
   }

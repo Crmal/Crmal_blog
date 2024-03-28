@@ -26,6 +26,11 @@ export class UserService {
     return result as Omit<User, 'password'>;
   }
 
+  async findOne(userId: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id: +userId } });
+    return user;
+  }
+
   async checkUserAndThrowError(email: string): Promise<void> {
     const user = await this.userRepository.findOne({ where: { email } });
 
@@ -34,10 +39,20 @@ export class UserService {
     }
   }
 
-  async findOneById(userId: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id: +userId } });
+  async findOneByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
 
-    if (user) {
+    if (!user) {
+      throw new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
+    }
+
+    return user;
+  }
+
+  async findOneById(userId: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id: Number(userId) } });
+
+    if (!user) {
       throw new AuthException(AuthExceptionType.CONFLICT_DUPLICATE_USER);
     }
 
