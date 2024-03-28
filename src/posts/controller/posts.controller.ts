@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guard/auth.grard';
 import { GetUserId } from 'src/common/dec/decorators';
 
@@ -13,5 +13,10 @@ export class PostsController {
   @Post('')
   async create(@Body() postCreateRequest: PostCreateRequest, @GetUserId() userId: string) {
     return await this.postService.create(postCreateRequest, userId);
+  }
+
+  @Get(':id')
+  async findOneById(@Param() postId: string) {
+    return await this.postService.findOneById(postId);
   }
 }
